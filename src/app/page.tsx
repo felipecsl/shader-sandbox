@@ -1,20 +1,26 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Editor } from "./editor";
-// @ts-ignore
-import GlslCanvas from "glslCanvas";
+import dynamic from "next/dynamic";
 // @ts-ignore
 import shader from "public/shader.frag";
 
-export default function Home() {
+// editor requires 'navigator' which is not available during sever-side rendering
+const Editor = dynamic(() => import("../components/editor"), { ssr: false });
+
+function Home() {
   const canvas = useRef<HTMLCanvasElement | null>(null);
-  const [sandbox, setSandbox] = useState<GlslCanvas | null>(null);
+  const [sandbox, setSandbox] = useState<any | null>(null);
   useEffect(() => {
-    if (canvas.current) {
-      const sandbox = new GlslCanvas(canvas.current);
-      setSandbox(sandbox);
-    }
+    (async () => {
+      if (canvas.current) {
+        // also cannot be loaded via server side since it requires 'window'
+        // @ts-ignore
+        const { default: GlslCanvas } = await import("glslCanvas");
+        const sandbox = new GlslCanvas(canvas.current);
+        setSandbox(sandbox);
+      }
+    })();
   }, [canvas]);
   const onSaveShader = useCallback(
     (content: string) => {
@@ -37,3 +43,9 @@ export default function Home() {
     </main>
   );
 }
+
+Home.getInitialProps = () => {
+  return undefined;
+};
+
+export default Home;

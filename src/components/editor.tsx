@@ -7,18 +7,16 @@ registerLanguage({
   id: "glsl",
   extensions: [".frag"],
   aliases: ["GLSL Shading Language", "GLSL", "glsl"],
-  loader: () => import("./glsl"),
+  loader: () => import("../glsl"),
 });
 
-export const Editor = ({
-  className,
-  code,
-  onSave,
-}: {
-  className: string;
-  code: string;
+export type EditorParams = {
+  className?: string;
+  code?: string;
   onSave?: (content: string) => void;
-}) => {
+};
+
+const Editor = ({ className = "", code = "", onSave }: EditorParams) => {
   const [editor, setEditor] =
     useState<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoEl = useRef(null);
@@ -57,3 +55,5 @@ export const Editor = ({
 
   return <div className={className} ref={monacoEl}></div>;
 };
+
+export default Editor;
