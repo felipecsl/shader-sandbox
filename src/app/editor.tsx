@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+// @ts-ignore
 import { registerLanguage } from "monaco-editor/esm/vs/basic-languages/_.contribution";
-import { KeyCode } from "monaco-editor/esm/vs/editor/editor.api";
 
 registerLanguage({
   id: "glsl",
@@ -28,13 +28,6 @@ export const Editor = ({
       setEditor((editor) => {
         if (editor) return editor;
 
-        // monaco.editor.addKeybindingRules([
-        //   {
-        //     keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.Slash,
-        //     command: "editor.action.commentLine", // ID
-        //     when: "textInputFocus", // When
-        //   },
-        // ]);
         return monaco.editor.create(monacoEl.current!, {
           value: code,
           language: "glsl",
